@@ -1,7 +1,7 @@
 app
     .controller('SiteLogin', ['$scope', 'rest', 'toaster', '$window', function ($scope, rest, toaster, $window) {
 
-        rest.url = 'http://rest-yii2.herokuapp.com/user/login';
+        rest.url = 'http://angular-yii2.tk/v1/user/login';
 
         var errorCallback = function (data) {
             toaster.clear();
@@ -20,24 +20,5 @@ app
                 }, 1000);
             }).error(errorCallback);
         };
-
-        rest.postModel($scope.model).success(function (data) {
-            $window.sessionStorage._auth = data;
-            document.location = '';
-        });
-    }])
-    .controller('SiteLogout', ['$scope', 'rest', '$window', function ($scope, rest, $window) {
-
-        rest.url = 'http://rest-yii2.herokuapp.com/user/logout';
-
-        var errorCallback = function (data) {
-            console.log(data);
-        };
-
-        rest.get().success(function () {
-            delete $window.sessionStorage._auth;
-            document.location = '';
-        }).error(errorCallback);
-
 
     }]);

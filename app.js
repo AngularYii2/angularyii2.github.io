@@ -14,10 +14,6 @@ app.config(['$locationProvider', '$routeProvider', '$httpProvider', function ($l
             templateUrl: modulesPath + '/site/views/login.html',
             controller: 'SiteLogin'
         })
-        .when('/logout', {
-            templateUrl: modulesPath + '/site/views/main.html',
-            controller: 'SiteLogout'
-        })
 
         .when('/post', {
             templateUrl: modulesPath + '/post/views/index.html',
@@ -58,8 +54,8 @@ app.config(['$locationProvider', '$routeProvider', '$httpProvider', function ($l
 app.factory('authInterceptor', function ($q, $window) {
     return {
         request: function (config) {
-            if ($window.sessionStorage._auth) {
-                config.headers.Authorization = 'Basic ' + $window.sessionStorage._auth;
+            if ($window.sessionStorage._auth && config.url.substring(0,4) == 'http' ) {
+                config.params = {'access-token': $window.sessionStorage._auth};
             }
             return config;
         },
@@ -86,7 +82,7 @@ app.service('rest', function ($http, $location, $routeParams) {
         },
 
         model: function () {
-            return $http.get(this.url + "/" + $routeParams.id + "?expand=comments");
+            return $http.get(this.url + "/" + $routeParams.id);
         },
 
         get: function () {
@@ -112,15 +108,9 @@ app.directive('login', ['$http', function ($http) {
     return {
         transclude: true,
         link: function (scope, element, attrs) {
-            if (window.sessionStorage._auth != undefined) {
-                $http.get('http://rest-yii2.herokuapp.com/user').success(
-                    function (data) {
-                        scope.username = data[0].username;
-                    }
-                );
-            }
+            scope.isGuest = window.sessionStorage._auth == undefined;
         },
 
-        template: '<a href="login" ng-if="!username">Login</a><a href="logout" ng-if="username">Logout ({{username}})</a>'
+        template: '<a href="login" ng-if="isGuest">Login</a>'
     }
 }]);
