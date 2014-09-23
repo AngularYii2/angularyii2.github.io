@@ -44,7 +44,7 @@ app.service('rest', function ($http, $location, $routeParams) {
             return $http.put(this.url + "/" + $routeParams.id, model);
         },
 
-        deleteModel: function (model) { //DELETE ( contoroller/id/delete) Yii2 model
+        deleteModel: function () { //DELETE ( contoroller/id/delete) Yii2 model
             return $http.delete(this.baseUrl + this.path);
         }
     };
