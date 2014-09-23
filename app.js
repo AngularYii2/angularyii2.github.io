@@ -15,9 +15,24 @@ app.config(['$locationProvider', '$routeProvider', '$httpProvider', function ($l
             controller: 'SiteLogin'
         })
 
-        .when('/post', {
+        .when('/post/published', {
             templateUrl: modulesPath + '/post/views/index.html',
-            controller: 'PostIndex'
+            controller: 'PostIndex',
+            resolve: {
+                status: function () {
+                    return 2;
+                }
+            }
+        })
+
+        .when('/post/draft', {
+            templateUrl: modulesPath + '/post/views/index.html',
+            controller: 'PostIndex',
+            resolve: {
+                status: function () {
+                    return 1;
+                }
+            }
         })
 
         .when('/post/create', {
@@ -44,7 +59,7 @@ app.config(['$locationProvider', '$routeProvider', '$httpProvider', function ($l
             templateUrl: '404.html'
         })
 
-        .otherwise({ redirectTo: '/404' })
+        .otherwise({redirectTo: '/404'})
     ;
 
     $locationProvider.html5Mode(true).hashPrefix('!');
@@ -54,7 +69,7 @@ app.config(['$locationProvider', '$routeProvider', '$httpProvider', function ($l
 app.factory('authInterceptor', function ($q, $window) {
     return {
         request: function (config) {
-            if ($window.sessionStorage._auth && config.url.substring(0,4) == 'http' ) {
+            if ($window.sessionStorage._auth && config.url.substring(0, 4) == 'http') {
                 config.params = {'access-token': $window.sessionStorage._auth};
             }
             return config;
@@ -68,49 +83,59 @@ app.factory('authInterceptor', function ($q, $window) {
     };
 });
 
-app.value('app-version', '0.1');
+app.value('app-version', '0.2.0');
 
 // Need set url REST Api in controller!
 app.service('rest', function ($http, $location, $routeParams) {
 
     return {
 
-        url: undefined,
+        baseUrl: 'http://angular-yii2.tk/',
+        path: undefined,
 
         models: function () {
-            return $http.get(this.url + location.search);
+            return $http.get(this.baseUrl + this.path + location.search);
         },
 
         model: function () {
-            return $http.get(this.url + "/" + $routeParams.id);
+            if ($routeParams.expand != null) {
+                return $http.get(this.baseUrl + this.path + "/" + $routeParams.id + '?expand=' + $routeParams.expand);
+            }
+            return $http.get(this.baseUrl + this.path + "/" + $routeParams.id);
         },
 
         get: function () {
-            return $http.get(this.url);
+            return $http.get(this.baseUrl + this.path);
         },
 
         postModel: function (model) {
-            return $http.post(this.url, model);
+            return $http.post(this.baseUrl + this.path, model);
         },
 
         putModel: function (model) {
-            return $http.put(this.url + "/" + $routeParams.id, model);
+            return $http.put(this.baseUrl + this.path + "/" + $routeParams.id, model);
         },
 
-        deleteModel: function (model) {
-            return $http.delete(this.url + "/" + $routeParams.id, model);
+        deleteModel: function () {
+            return $http.delete(this.baseUrl + this.path);
         }
     };
 
 });
 
-app.directive('login', ['$http', function ($http) {
-    return {
-        transclude: true,
-        link: function (scope, element, attrs) {
-            scope.isGuest = window.sessionStorage._auth == undefined;
-        },
+app
+    .directive('login', ['$http', function ($http) {
+        return {
+            transclude: true,
+            link: function (scope, element, attrs) {
+                scope.isGuest = window.sessionStorage._auth == undefined;
+            },
 
-        template: '<a href="login" ng-if="isGuest">Login</a>'
-    }
-}]);
+            template: '<a href="login" ng-if="isGuest">Login</a>'
+        }
+    }])
+    .filter('checkmark', function () {
+        return function (input) {
+            return input ? '\u2713' : '\u2718';
+        };
+    });

@@ -13,6 +13,7 @@
                 <label>Content post</label>
                 <textarea ng-model="post.content" class="form-control" placeholder="Enter content" rows="6"
                           maxlength="500"></textarea>
+                <p class="hint">You can use html tags.</p>
             </div>
 
             <label>Select status:&nbsp;</label>
@@ -25,15 +26,16 @@
 
             <div class="btn-group">
                 <button type="submit" ng-click="save()" class="btn btn-success">Submit</button>
-                <a href="post" class="btn btn-default">Cancel</a>
+                <a href="/" class="btn btn-default">Cancel</a>
             </div>
 
         </form>
     </div>
     <div class="col-xs-6">
-        <h1>{{post.title}}</h1>
+        <h3><span class="sub-header">Title:</span> {{post.title}}</h3>
 
-        <div ng-bind-html="viewContent()"></div>
+        <h3>Content:</h3>
+        <div ng-bind-html="post.content"></div>
     </div>
 </div>
 <hr>

@@ -1,7 +1,7 @@
 app
     .controller('SiteLogin', ['$scope', 'rest', 'toaster', '$window', function ($scope, rest, toaster, $window) {
 
-        rest.url = 'http://angular-yii2.tk/v1/user/login';
+        rest.path = 'v1/user/login';
 
         var errorCallback = function (data) {
             toaster.clear();

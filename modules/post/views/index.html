@@ -3,7 +3,6 @@
         <div class="form-group">
             <label>Search: <input class="form-control" type="text" ng-model="searchField"></label>
         </div>
-        <a href="post?expand=comments">show comments</a>
     </div>
 
     <div class="col-xs-6 text-right">
@@ -14,29 +13,26 @@
 
 <section>
 
-    <div ng-repeat="post in posts | filter:searchField" class="am-fade" ng-mouseover="menuShow=true"
-         ng-mouseout="menuShow=false">
-        <div class="btn-group pull-right" ng-show="menuShow">
-            <a class="btn btn-primary" ng-href="post/{{post.id}}/edit"><span
-                    class="glyphicon glyphicon-edit"></span></a>
-            <a class="btn btn-danger" ng-href="post/{{post.id}}/delete"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-        <h1><a ng-href="post/{{post.id}}">{{post.title}}</a></h1>
-        <article>
-            {{post.content}}
-        </article>
-        <div class="badge">{{post.tags}}</div>
-        <div ng-if="post.comments">
-            <h3 class="sub-header">
-                Comments
-            </h3>
+    <div ng-repeat="post in posts | filter:searchField " class="am-fade panel panel-default"
+         ng-mouseover="menuShow=true" ng-mouseout="menuShow=false">
 
-            <div ng-repeat="comment in post.comments">
-                <blockquote>
-                    <h5>{{comment.author}}:</h5>
+        <div class="panel-heading">
 
-                    <p>{{comment.content}}</p></blockquote>
+            <div class="btn-group pull-right" ng-show="menuShow">
+                <a class="btn btn-primary" ng-href="post/{{post.id}}/edit"><span
+                        class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-danger" ng-href="post/{{post.id}}/delete"><span
+                        class="glyphicon glyphicon-remove"></span></a>
             </div>
+
+            <h1><a ng-href="post/{{post.id}}">{{post.title}}</a></h1>
+
+        </div>
+
+        <div class="panel-body">
+            <article ng-bind-html="post.content"></article>
+
+            <div class="badge">{{post.tags}}</div>
         </div>
     </div>
 
