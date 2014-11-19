@@ -90,7 +90,7 @@ app.service('rest', function ($http, $location, $routeParams) {
 
     return {
 
-        baseUrl: 'http://angular-yii2.tk/',
+        baseUrl: 'https://yii2-rest-githubjeka.c9.io/rest/web/',
         path: undefined,
 
         models: function () {
