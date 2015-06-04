@@ -7,6 +7,7 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
     var defaults = this.defaults = {
       animation: 'am-fade-and-slide-right',
       prefixClass: 'aside',
+      prefixEvent: 'aside',
       placement: 'right',
       template: 'aside/aside.tpl.html',
       contentTemplate: false,
@@ -39,7 +40,7 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
 
   })
 
-  .directive('bsAside', function($window, $location, $sce, $aside) {
+  .directive('bsAside', function($window, $sce, $aside) {
 
     var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
 
@@ -51,6 +52,13 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
         var options = {scope: scope, element: element, show: false};
         angular.forEach(['template', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function(key) {
           if(angular.isDefined(attr[key])) options[key] = attr[key];
+        });
+
+        // use string regex match boolean attr falsy values, leave truthy values be
+        var falseValueRegExp = /^(false|0|)$/i;
+        angular.forEach(['backdrop', 'keyboard', 'html', 'container'], function(key) {
+          if(angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key]))
+            options[key] = false;
         });
 
         // Support scope as data-attrs
@@ -77,7 +85,7 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
 
         // Garbage collection
         scope.$on('$destroy', function() {
-          aside.destroy();
+          if (aside) aside.destroy();
           options = null;
           aside = null;
         });

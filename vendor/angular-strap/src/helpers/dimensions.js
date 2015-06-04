@@ -44,11 +44,74 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
       var boxRect = element.getBoundingClientRect();
       var docElement = element.ownerDocument;
       return {
-        width: element.offsetWidth,
-        height: element.offsetHeight,
+        width: boxRect.width || element.offsetWidth,
+        height: boxRect.height || element.offsetHeight,
         top: boxRect.top + (window.pageYOffset || docElement.documentElement.scrollTop) - (docElement.documentElement.clientTop || 0),
         left: boxRect.left + (window.pageXOffset || docElement.documentElement.scrollLeft) - (docElement.documentElement.clientLeft || 0)
       };
+    };
+  
+    /**
+     * Provides set equivalent of jQuery's offset function:
+     * @required-by bootstrap-tooltip
+     * @url http://api.jquery.com/offset/
+     * @param element
+     * @param options
+     * @param i
+     */
+    fn.setOffset = function (element, options, i) {
+      var curPosition,
+          curLeft,
+          curCSSTop,
+          curTop,
+          curOffset,
+          curCSSLeft,
+          calculatePosition,
+          position = fn.css(element, 'position'),
+          curElem = angular.element(element),
+          props = {};
+      
+      // Set position first, in-case top/left are set even on static elem
+      if (position === 'static') {
+        element.style.position = 'relative';
+      }
+      
+      curOffset = fn.offset(element);
+      curCSSTop = fn.css(element, 'top');
+      curCSSLeft = fn.css(element, 'left');
+      calculatePosition = (position === 'absolute' || position === 'fixed') && 
+                          (curCSSTop + curCSSLeft).indexOf('auto') > -1;
+      
+      // Need to be able to calculate position if either
+      // top or left is auto and position is either absolute or fixed
+      if (calculatePosition) {
+        curPosition = fn.position(element);
+        curTop = curPosition.top;
+        curLeft = curPosition.left;
+      } else {
+        curTop = parseFloat(curCSSTop) || 0;
+        curLeft = parseFloat(curCSSLeft) || 0;
+      }
+      
+      if (angular.isFunction(options)) {
+        options = options.call(element, i, curOffset);
+      }
+      
+      if (options.top !== null ) {
+        props.top = (options.top - curOffset.top) + curTop;
+      }
+      if ( options.left !== null ) {
+        props.left = (options.left - curOffset.left) + curLeft;
+      }
+
+      if ('using' in options) {
+        options.using.call(curElem, props);
+      } else {
+        curElem.css({
+          top: props.top + 'px',
+          left: props.left + 'px'
+        });
+      }
     };
 
     /**
@@ -73,7 +136,6 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
 
         // Get *real* offsetParentElement
         offsetParentElement = offsetParent(element);
-        offset = fn.offset(element);
 
         // Get correct offsets
         offset = fn.offset(element);
@@ -129,7 +191,7 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
     };
 
     /**
-     * Provides equivalent of jQuery's height function
+     * Provides equivalent of jQuery's width function
      * @required-by bootstrap-affix
      * @url http://api.jquery.com/width/
      * @param element

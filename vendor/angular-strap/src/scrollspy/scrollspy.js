@@ -88,10 +88,12 @@ angular.module('mgcrea.ngStrap.scrollspy', ['mgcrea.ngStrap.helpers.debounce', '
           // Unbind events
           scrollEl.off('click', this.checkPositionWithEventLoop);
           windowEl.off('resize', debouncedCheckPosition);
-          scrollEl.off('scroll', debouncedCheckPosition);
+          scrollEl.off('scroll', throttledCheckPosition);
           unbindViewContentLoaded();
           unbindIncludeContentLoaded();
-
+          if (scrollId) {
+            delete spies[scrollId];
+          }
         };
 
         $scrollspy.checkPosition = function() {
@@ -122,7 +124,9 @@ angular.module('mgcrea.ngStrap.scrollspy', ['mgcrea.ngStrap.helpers.debounce', '
         };
 
         $scrollspy.checkPositionWithEventLoop = function() {
-          setTimeout(this.checkPosition, 1);
+          // IE 9 throws an error if we use 'this' instead of '$scrollspy'
+          // in this setTimeout call
+          setTimeout($scrollspy.checkPosition, 1);
         };
 
         // Protected methods
@@ -219,8 +223,10 @@ angular.module('mgcrea.ngStrap.scrollspy', ['mgcrea.ngStrap.helpers.debounce', '
         scrollspy.trackElement(options.target, element);
 
         scope.$on('$destroy', function() {
-          scrollspy.untrackElement(options.target, element);
-          scrollspy.destroy();
+          if (scrollspy) {
+            scrollspy.untrackElement(options.target, element);
+            scrollspy.destroy();
+          }
           options = null;
           scrollspy = null;
         });

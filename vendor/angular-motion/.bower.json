@@ -1,7 +1,7 @@
 {
   "name": "angular-motion",
   "description": "AngularMotion - Fancy CSS3 animations for AngularJS 1.2+",
-  "version": "0.3.3",
+  "version": "0.4.2",
   "keywords": [
     "angular",
     "animation"
@@ -19,29 +19,30 @@
   },
   "licenses": [
     {
-      "type": "MIT"
+      "type": "MIT",
+      "url": "https://github.com/mgcrea/bootstrap-additions/blob/master/LICENSE.md"
     }
   ],
   "main": [
-    "dist/angular-motion.min.css"
+    "dist/angular-motion.css"
   ],
-  "dependencies": {
-    "angular": "~1.2.10",
-    "angular-animate": "~1.2.10"
-  },
+  "ignore": [
+    "docs",
+    "test",
+    "CONTRIBUTING.md"
+  ],
+  "dependencies": {},
   "devDependencies": {
-    "bootstrap": ">=3.0.0",
-    "angular-mocks": "~1.2.10",
-    "angular-strap": "~2.0.0",
-    "fastclick": "~0.6.11"
+    "angular-animate": "^1.2",
+    "bootstrap": "^3.3.4"
   },
-  "_release": "0.3.3",
+  "_release": "0.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.3.3",
-    "commit": "ef0252583779cf67f8666f00eb3d24e2749b8998"
+    "tag": "v0.4.2",
+    "commit": "474d801be4ba08e8ead5ccc1c6003238b841b6e6"
   },
   "_source": "git://github.com/mgcrea/angular-motion.git",
-  "_target": "*",
+  "_target": "~0.4",
   "_originalSource": "angular-motion"
 }

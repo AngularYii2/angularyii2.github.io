@@ -79,7 +79,6 @@ app
         $scope.icons = [
             {value: '1', label: 'Draft'},
             {value: '2', label: 'Published'},
-            {value: '3', label: 'Archived'}
         ];
 
         var errorCallback = function (data) {
@@ -126,7 +125,6 @@ app
         $scope.icons = [
             {value: '1', label: 'Draft'},
             {value: '2', label: 'Published'},
-            {value: '3', label: 'Archived'}
         ];
 
         rest.model().success(function (data) {

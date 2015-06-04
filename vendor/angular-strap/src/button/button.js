@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.button', ['ngAnimate'])
+angular.module('mgcrea.ngStrap.button', [])
 
   .provider('$button', function() {
 
@@ -35,7 +35,7 @@ angular.module('mgcrea.ngStrap.button', ['ngAnimate'])
 
   })
 
-  .directive('bsCheckbox', function($button, $$animateReflow) {
+  .directive('bsCheckbox', function($button, $$rAF) {
 
     var defaults = $button.defaults;
     var constantValueRegExp = /^(true|false|\d+)$/;
@@ -67,6 +67,11 @@ angular.module('mgcrea.ngStrap.button', ['ngAnimate'])
             // console.warn('$parser', element.attr('ng-model'), 'viewValue', viewValue);
             return viewValue ? trueValue : falseValue;
           });
+          // modelValue -> $formatters -> viewValue
+          controller.$formatters.push(function(modelValue) {
+             // console.warn('$formatter("%s"): modelValue=%o (%o)', element.attr('ng-model'), modelValue, typeof modelValue);
+             return angular.equals(modelValue, trueValue);
+          });
           // Fix rendering for exotic values
           scope.$watch(attr.ngModel, function(newValue, oldValue) {
             controller.$render();
@@ -77,7 +82,7 @@ angular.module('mgcrea.ngStrap.button', ['ngAnimate'])
         controller.$render = function () {
           // console.warn('$render', element.attr('ng-model'), 'controller.$modelValue', typeof controller.$modelValue, controller.$modelValue, 'controller.$viewValue', typeof controller.$viewValue, controller.$viewValue);
           var isActive = angular.equals(controller.$modelValue, trueValue);
-          $$animateReflow(function() {
+          $$rAF(function() {
             if(isInput) element[0].checked = isActive;
             activeElement.toggleClass(options.activeClass, isActive);
           });
@@ -121,7 +126,7 @@ angular.module('mgcrea.ngStrap.button', ['ngAnimate'])
 
   })
 
-  .directive('bsRadio', function($button, $$animateReflow) {
+  .directive('bsRadio', function($button, $$rAF) {
 
     var defaults = $button.defaults;
     var constantValueRegExp = /^(true|false|\d+)$/;
@@ -137,13 +142,17 @@ angular.module('mgcrea.ngStrap.button', ['ngAnimate'])
         var isInput = element[0].nodeName === 'INPUT';
         var activeElement = isInput ? element.parent() : element;
 
-        var value = constantValueRegExp.test(attr.value) ? scope.$eval(attr.value) : attr.value;
+        var value;
+        attr.$observe('value', function(v) {
+          value = constantValueRegExp.test(v) ? scope.$eval(v) : v;
+          controller.$render();
+        });
 
         // model -> view
         controller.$render = function () {
           // console.warn('$render', element.attr('value'), 'controller.$modelValue', typeof controller.$modelValue, controller.$modelValue, 'controller.$viewValue', typeof controller.$viewValue, controller.$viewValue);
           var isActive = angular.equals(controller.$modelValue, value);
-          $$animateReflow(function() {
+          $$rAF(function() {
             if(isInput) element[0].checked = isActive;
             activeElement.toggleClass(options.activeClass, isActive);
           });
