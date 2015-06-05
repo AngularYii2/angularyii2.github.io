@@ -15,8 +15,8 @@ app
             rest.postModel($scope.model).success(function (data) {
                 $window.sessionStorage._auth = data;
                 toaster.pop('success', "Success");
-                window.setTimeout(function () {
-                    document.location = '';
+                $window.setTimeout(function () {
+                    $window.location = '/';
                 }, 1000);
             }).error(errorCallback);
         };

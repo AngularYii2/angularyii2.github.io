@@ -70,7 +70,7 @@ app
         };
     }])
 
-    .controller('PostCreate', ['$scope', 'rest', 'toaster', '$sce', function ($scope, rest, toaster) {
+    .controller('PostCreate', ['$scope', 'rest', 'toaster', '$window', function ($scope, rest, toaster, $window) {
 
         rest.path = 'v1/posts';
 
@@ -97,15 +97,15 @@ app
 
                 toaster.pop('success', "Saved");
 
-                window.setTimeout(function () {
-                    document.location = 'post/' + data.id;
+                $window.setTimeout(function () {
+                    $window.location = '/#!/post/' + data.id;
                 }, 1000);
 
             }).error(errorCallback);
         };
     }])
 
-    .controller('PostEdit', ['$scope', 'rest', 'toaster', '$sce', function ($scope, rest, toaster) {
+    .controller('PostEdit', ['$scope', 'rest', 'toaster', '$window', function ($scope, rest, toaster, $window) {
 
         var errorCallback = function (data) {
             toaster.clear();
@@ -137,16 +137,15 @@ app
 
                 toaster.pop('success', "Saved");
 
-                window.setTimeout(function () {
-                    document.location = 'post/' + $scope.post.id;
+                $window.setTimeout(function () {
+                    $window.location = '/#!/post/' + $scope.post.id;
                 }, 1000);
-
             }).error(errorCallback);
         };
 
     }])
 
-    .controller('PostDelete', ['$scope', 'rest', 'toaster', '$sce', function ($scope, rest, toaster) {
+    .controller('PostDelete', ['$scope', 'rest', 'toaster', '$window', function ($scope, rest, toaster, $window) {
 
         $scope.post = {};
 
@@ -176,8 +175,8 @@ app
 
                 toaster.pop('success', "Deleted!");
 
-                window.setTimeout(function () {
-                    document.location = '/';
+                $window.setTimeout(function () {
+                    $window.location = '/';
                 }, 1000);
 
             }).error(errorCallback);

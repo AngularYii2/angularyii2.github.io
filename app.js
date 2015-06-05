@@ -76,14 +76,16 @@ app.factory('authInterceptor', function ($q, $window) {
         },
         responseError: function (rejection) {
             if (rejection.status === 401) {
-                $window.location = 'login';
+                $window.setTimeout(function () {
+                    $window.location = '/#!/login';
+                }, 1000);
             }
             return $q.reject(rejection);
         }
     };
 });
 
-app.value('app-version', '0.2.0');
+app.value('app-version', '0.0.3');
 
 // Need set url REST Api in controller!
 app.service('rest', function ($http, $location, $routeParams) {
